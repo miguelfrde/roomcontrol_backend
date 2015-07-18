@@ -8,9 +8,9 @@ control a room's lights, music, alarm and more.
 
 ## Requirements
 
-The Spotify app key that can be obtained [here](https://developer.spotify.com/technologies/libspotify/#application-keys).
+- A Spotify app key is needed and it can be obtained [here](https://developer.spotify.com/technologies/libspotify/#application-keys).
 Remember to choose binary, not C-Code.
 
-C: libspotify
+- `libspotify`
 
-Python: `pip install requirements.txt --allow-unverified=pyaudio pyaudio`
+- `pip install -r requirements.txt --allow-unverified=pyaudio`
