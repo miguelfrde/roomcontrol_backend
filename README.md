@@ -13,4 +13,4 @@ Remember to choose binary, not C-Code.
 
 C: libspotify
 
-Python: check `requirements.txt`
+Python: `pip install requirements.txt --allow-unverified=pyaudio pyaudio`
