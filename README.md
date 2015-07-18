@@ -1,5 +1,7 @@
 # Room Control Backend
 
+**WARNING: Under development... WIP!**
+
 Application built with Flask that interconnects the Raspberry Pi with the
 [mobile application](https://github.com/miguelfrde/roomcontrol) to
 control a room's lights, music, alarm and more.
