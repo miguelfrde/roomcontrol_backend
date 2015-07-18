@@ -58,3 +58,6 @@ target/
 
 # Spotify
 spotify_appkey.key
+
+# Flask
+tmp/
