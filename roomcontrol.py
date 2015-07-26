@@ -12,7 +12,7 @@ app.register_blueprint(alarm_service, url_prefix='/alarm')
 def login():
     pass
 
-@app.route('/settings', methods=['POST'])
+@app.route('/settings', methods=['GET', 'POST'])
 def update_settings():
     pass
 
