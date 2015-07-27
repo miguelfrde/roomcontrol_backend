@@ -14,5 +14,6 @@ def alarm():
 def update_alarm_settings():
     pass
 
+
 def get_alarm_settings():
     pass

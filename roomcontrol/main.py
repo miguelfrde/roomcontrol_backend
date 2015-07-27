@@ -1,6 +1,8 @@
 from flask import Blueprint, request
 
+
 main_service = Blueprint('main', __name__)
+
 
 @main_service.route('/login', methods=['POST'])
 def login():

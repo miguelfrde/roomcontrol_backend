@@ -1,11 +1,10 @@
 import threading
 import os.path
 import logging
-import getpass
-import time
 from functools import wraps
 
 import spotify
+
 
 class SpotifyService:
     def __init__(self):
@@ -19,8 +18,9 @@ class SpotifyService:
         logged_in_event = threading.Event()
         self.session.on(
             spotify.SessionEvent.CONNECTION_STATE_UPDATED,
-            lambda s: self.__login_connection_state_listener(s, logged_in_event))
-        
+            lambda s:
+                self.__login_connection_state_listener(s, logged_in_event))
+
         if os.path.isfile('blobs/currentsession'):
             with open('blobs/currentsession', 'rt') as f:
                 user_id, blob = f.read().split('|')
@@ -28,8 +28,8 @@ class SpotifyService:
                 self.session.login(user_id, blob=blob, remember_me=True)
         else:
             self.session.on(
-                    spotify.SessionEvent.CREDENTIALS_BLOB_UPDATED,
-                    lambda s,b: self.__login_credentials_blob_updated(s, b))
+                spotify.SessionEvent.CREDENTIALS_BLOB_UPDATED,
+                lambda s, b: self.__login_credentials_blob_updated(s, b))
             self.session.login(user_id, password, remember_me=True)
 
         logged_in_event.wait()
@@ -46,8 +46,9 @@ class SpotifyService:
     def login_required(f):
         @wraps(f)
         def wrapper(self, *args, **kwargs):
-            if self.session.connection.state is spotify.ConnectionState.LOGGED_OUT:
-                self.login()    
+            connstate = self.session.connection.state
+            if connstate is spotify.ConnectionState.LOGGED_OUT:
+                self.login()
             return f(self, *args, **kwargs)
         return wrapper
 
@@ -59,7 +60,7 @@ class SpotifyService:
         for playlist in playlists:
             playlist.load()
         return [str(p.link) for p in playlists]
-   
+
     @login_required
     def playlist_info(self, playlisturi):
         playlist = spotify.Playlist(self.session, uri=playlisturi)
@@ -83,10 +84,11 @@ class SpotifyService:
         track = spotify.Track(self.session, trackuri)
         if not track.is_loaded:
             track.load()
+        cover = track.album.cover(spotify.ImageSize.LARGE)
         return {
             'name': track.name,
             'artist': track.album.artist.load().name,
-            'album_cover': track.album.cover(spotify.ImageSize.LARGE).load().data_uri,
+            'album_cover': cover.load().data_uri,
             'spotify_uri': trackuri
         }
 
