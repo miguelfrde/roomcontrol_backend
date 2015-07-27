@@ -1,4 +1,6 @@
 from setuptools import setup, find_packages
+import os
+
 from pip.req import parse_requirements
 
 import roomcontrol
@@ -9,8 +11,8 @@ def read(filename):
         return f.read()
 
 
-def requirements(requirements_filename):
-    reqs = parse_requirements(requirements_filename, session=False)
+def requirements(reqs_filename):
+    reqs = parse_requirements(reqs_filename, session=False)
     return [str(r.req) for r in reqs]
 
 
@@ -32,6 +34,7 @@ setup(
     packages=find_packages(exclude=['test', 'test.*']),
     include_package_data=True,
     platforms='any',
+    zip_safe=False,
     classifiers=[
         'Programming Language :: Python 2.7',
         'Programming Language :: Python :: 3.0',

@@ -1,0 +1,27 @@
+language: python
+
+sudo: false
+
+addons:
+  apt:
+    sources:
+      - mopidy-stable
+    packages:
+      - libasound2-dev
+      - libffi-dev
+      - libspotify-dev
+      - libspotify12
+
+env:
+    - TOX_ENV=py34
+    - TOX_ENV=flake8
+
+install: 
+    - pip install tox
+    - pip install coveralls
+
+script: 
+    - tox -e $TOX_ENV
+
+after_success:
+    coveralls

@@ -1,12 +1,13 @@
 import logging
 
 import click
+
 from flask import Flask
 
+from roomcontrol.services.alarm import alarm_service
+from roomcontrol.services.light import light_service
 from roomcontrol.services.main import main_service
 from roomcontrol.services.music import music_service
-from roomcontrol.services.light import light_service
-from roomcontrol.services.alarm import alarm_service
 
 
 @click.group(name='Room Control')

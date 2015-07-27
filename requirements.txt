@@ -1,6 +1,4 @@
- --allow-external PyAudio --allow-unverified=pyaudio
-
 Flask==0.10.1
 pyspotify==2.0.0
-PyAudio==0.2.8
+pyalsaaudio==0.8.2
 click==4.1
