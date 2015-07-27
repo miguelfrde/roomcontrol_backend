@@ -13,4 +13,15 @@ Remember to choose binary, not C-Code.
 
 - `libspotify`
 
-- `pip install -r requirements.txt --allow-unverified=pyaudio`
+## Setup for development
+
+```
+$ python setup.py develop
+```
+
+## Testing
+
+```
+$ flake8 .
+$ py.test
+```
