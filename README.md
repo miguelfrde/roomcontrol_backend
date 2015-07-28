@@ -25,6 +25,5 @@ $ python setup.py develop
 ## Testing
 
 ```
-$ flake8 .
-$ py.test
+$ tox
 ```
