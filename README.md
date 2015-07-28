@@ -27,3 +27,60 @@ $ python setup.py develop
 ```
 $ tox
 ```
+
+## Routes
+
+```
+POST /login
+GET /settings
+POST /setting
+s
+GET /light
+POST /light
+
+GET /alarm
+POST /alarm
+
+GET /music/volume
+POST /music/volume/<int:level>
+
+GET /music/status
+POST /music/pause
+POST /music/play
+POST /music/next
+POST /music/previous
+
+GET /music/trcks/current
+GET /music/playlists/current
+GET /music/playlists
+GET /music/playlists/<int:id>
+POST /music/playlists/<int:id>
+```
+
+## data.in format
+
+This data corresponds directly to the data saved in the
+[mobile device](https://github.com/miguelfrde/roomcontrol#data-saved-to-the-device-local-storage).
+
+```
+[settings]
+serverip=ip
+notify=boolean
+sendpic=boolean
+
+[light]
+intensity=int
+status=boolean
+color=hexadecimal
+
+[alarm]
+hour=int (epochs)
+sound=int (id)
+light=int (id)
+active=boolean
+
+[music]
+playlist=int (id)
+track=int (id)
+volume=int
+```
