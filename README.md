@@ -1,6 +1,6 @@
 # Room Control Backend
 
-![TravisCI](https://travis-ci.org/miguelfrde/roomcontrol_backend.svg?branch=master)
+[![TravisCI](https://travis-ci.org/miguelfrde/roomcontrol_backend.svg?branch=master)](https://travis-ci.org/miguelfrde/roomcontrol_backend)
 [![Coverage Status](https://coveralls.io/repos/miguelfrde/roomcontrol_backend/badge.svg?branch=master&service=github)](https://coveralls.io/github/miguelfrde/roomcontrol_backend?branch=master)
 
 **WARNING: Under development... WIP!**
