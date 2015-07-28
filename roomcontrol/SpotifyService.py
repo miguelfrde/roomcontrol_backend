@@ -1,6 +1,6 @@
-import threading
-import os.path
 import logging
+import os.path
+import threading
 from functools import wraps
 
 import spotify
