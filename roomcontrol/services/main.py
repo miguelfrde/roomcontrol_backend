@@ -1,10 +1,12 @@
 from flask import Blueprint, request
 
+from roomcontrol.utils import ssl_required
 
 main_service = Blueprint('main', __name__)
 
 
 @main_service.route('/login', methods=['POST'])
+@ssl_required
 def login():
     pass
 
