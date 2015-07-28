@@ -8,7 +8,7 @@ TEST_FILE = """
 a=1
 b=2
 
-[kind]]
+[kind2]
 c=3
 """
 
