@@ -1,14 +1,14 @@
-from roomcontrol.utils.localstorage import LocalStorage
-import py.path
 import pytest
 
+from roomcontrol.utils.localstorage import LocalStorage
 
-TEST_FILE="""
+
+TEST_FILE = """
 [kind1]
 a=1
 b=2
 
-[kind2]
+[kind]]
 c=3
 """
 

@@ -8,7 +8,7 @@ class LocalStorage:
         self._filename = filename
         self._config = configparser.ConfigParser()
         if os.path.isfile(filename):
-            self._config.read(filename) 
+            self._config.read(filename)
 
     def persist_changes(f):
         @wraps(f)
