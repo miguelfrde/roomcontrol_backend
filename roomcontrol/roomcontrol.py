@@ -9,8 +9,6 @@ from roomcontrol.services.light import light_service
 from roomcontrol.services.main import main_service
 from roomcontrol.services.music import music_service
 
-import roomcontrol.utils.localstorage as ls
-
 
 def create_app():
     app = Flask(__name__)

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify, request
 
 from roomcontrol.utils import ssl_required
 import roomcontrol.utils.localstorage as ls
