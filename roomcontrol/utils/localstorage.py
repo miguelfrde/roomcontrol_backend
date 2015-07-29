@@ -1,34 +1,46 @@
 import configparser
-import os.path
+import os
 from functools import wraps
 
 
-class LocalStorage:
-    def __init__(self, filename):
-        self._filename = filename
-        self._config = configparser.ConfigParser()
+def _open_config(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        config = configparser.ConfigParser()
+        filename = os.getenv('ROOMCONTROL_STORAGE', 'storage.cfg')
         if os.path.isfile(filename):
-            self._config.read(filename)
+            config.read(filename)
+        return f(config, *args, **kwargs)
+    return wrapper
 
-    def persist_changes(f):
-        @wraps(f)
-        def wrapper(self, *args, **kwargs):
-            f(self, *args, **kwargs)
-            with open(self._filename, 'w') as configfile:
-                self._config.write(configfile)
-        return wrapper
 
-    @persist_changes
-    def set(self, kind, key, value=None):
-        self._config[kind][key] = str(value)
+def _persist_changes(f):
+    @wraps(f)
+    @_open_config
+    def wrapper(config, *args, **kwargs):
+        filename = os.getenv('ROOMCONTROL_STORAGE', 'storage.cfg')
+        f(config, *args, **kwargs)
+        with open(filename, 'w') as configfile:
+            config.write(configfile)
+    return wrapper
 
-    @persist_changes
-    def set_all(self, kind, mapping):
-        m = {str(k): str(v) for k, v in mapping.items()}
-        self._config[kind] = m
 
-    def get(self, kind, key):
-        return self._config[kind][key]
+@_persist_changes
+def set(config, kind, key, value):
+    config[kind][key] = str(value)
 
-    def get_all(self, kind):
-        return self._config[kind]
+
+@_persist_changes
+def set_all(config, kind, mapping):
+    m = {str(k): str(v) for k, v in mapping.items()}
+    config[kind] = m
+
+
+@_open_config
+def get(config, kind, key):
+    return config[kind][key]
+
+
+@_open_config
+def get_all(config, kind):
+    return config[kind]
