@@ -33,8 +33,8 @@ $ tox
 ```
 POST /login
 GET /settings
-POST /setting
-s
+POST /settings
+
 GET /light
 POST /light
 
