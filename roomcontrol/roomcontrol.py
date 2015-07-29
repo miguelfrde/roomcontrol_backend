@@ -12,6 +12,15 @@ from roomcontrol.services.music import music_service
 import roomcontrol.utils.localstorage as ls
 
 
+def create_app():
+    app = Flask(__name__)
+    app.register_blueprint(main_service)
+    app.register_blueprint(music_service, url_prefix='/music')
+    app.register_blueprint(light_service, url_prefix='/light')
+    app.register_blueprint(alarm_service, url_prefix='/alarm')
+    return app
+
+
 @click.group(name='Room Control')
 @click.option('--debug', default=False, is_flag=True,
               help='Show debugging logs')
@@ -26,12 +35,8 @@ def cli(ctx, debug):
 @cli.command(short_help='Start the server')
 @click.pass_context
 def serve(ctx):
-    app = Flask(__name__)
+    app = create_app()
     app.config['DEBUG'] = ctx.obj['debug']
-    app.register_blueprint(main_service)
-    app.register_blueprint(music_service, url_prefix='/music')
-    app.register_blueprint(light_service, url_prefix='/light')
-    app.register_blueprint(alarm_service, url_prefix='/alarm')
     app.run()
 
 
