@@ -56,6 +56,9 @@ setup(
             'roomcontrol = roomcontrol.roomcontrol:main'
         ]
     },
+    data_files=[
+        (os.path.expanduser('~/.roomcontrol/'), ['roomcontrol/data/storage.cfg'])
+    ],
     tests_require=requirements('requirements-dev.txt'),
     install_requires=requirements('requirements.txt'),
     extras_require={

@@ -9,6 +9,8 @@ from roomcontrol.services.light import light_service
 from roomcontrol.services.main import main_service
 from roomcontrol.services.music import music_service
 
+import roomcontrol.utils.localstorage as ls
+
 
 @click.group(name='Room Control')
 @click.option('--debug', default=False, is_flag=True,

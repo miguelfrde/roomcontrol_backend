@@ -3,11 +3,14 @@ import os
 from functools import wraps
 
 
+DEFAULT_FILE = os.path.expanduser('~/.roomcontrol/storage.cfg')
+
+
 def _open_config(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         config = configparser.ConfigParser()
-        filename = os.getenv('ROOMCONTROL_STORAGE', 'storage.cfg')
+        filename = os.getenv('ROOMCONTROL_STORAGE', DEFAULT_FILE)
         if os.path.isfile(filename):
             config.read(filename)
         return f(config, *args, **kwargs)
@@ -18,7 +21,7 @@ def _persist_changes(f):
     @wraps(f)
     @_open_config
     def wrapper(config, *args, **kwargs):
-        filename = os.getenv('ROOMCONTROL_STORAGE', 'storage.cfg')
+        filename = os.getenv('ROOMCONTROL_STORAGE', DEFAULT_FILE)
         f(config, *args, **kwargs)
         with open(filename, 'w') as configfile:
             config.write(configfile)

@@ -1,6 +1,7 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 
 from roomcontrol.utils import ssl_required
+import roomcontrol.utils.localstorage as ls
 
 main_service = Blueprint('main', __name__)
 
@@ -21,8 +22,15 @@ def settings():
 
 
 def get_settings():
-    return 'settings'
+    return jsonify(ls.get_all('settings'))
 
 
 def update_settings():
-    return 'update settings'
+    settings = ls.get_all('settings')
+    new_settings = request.get_json()
+    for setting, value in new_settings.items():
+        if setting in settings:
+            print(setting)
+            settings[setting] = str(value)
+    ls.set_all('settings', settings)
+    return 'settings updated'
