@@ -25,6 +25,10 @@ def _persist_changes(f):
     return wrapper
 
 
+def set_storage_file(filename):
+    os.environ['ROOMCONTROL_STORAGE'] = filename
+
+
 @_persist_changes
 def set(config, kind, key, value):
     config[kind][key] = str(value)

@@ -22,6 +22,11 @@ def init_test_file(tmpdir):
     p.write(TEST_FILE)
 
 
+def test_sets_env_variable():
+    ls.set_storage_file('test.cfg')
+    assert os.environ.get('ROOMCONTROL_STORAGE') == 'test.cfg'
+
+
 def test_set_corresponds_to_get(init_test_file):
     ls.set('kind2', 'd', '4')
     assert ls.get('kind2', 'd') == '4'
