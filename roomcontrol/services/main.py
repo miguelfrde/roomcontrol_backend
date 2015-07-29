@@ -14,7 +14,6 @@ def login():
 
 @main_service.route('/settings', methods=['GET', 'POST'])
 def settings():
-    print('settings called')
     if request.method == 'GET':
         return get_settings()
     else:
