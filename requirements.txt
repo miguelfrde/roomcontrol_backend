@@ -1,4 +1,4 @@
-Flask==0.10.1
 pyspotify==2.0.0
 pyalsaaudio==0.8.2
 click==4.1
+nameko==2.1.2

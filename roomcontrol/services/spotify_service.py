@@ -3,10 +3,14 @@ import os.path
 import threading
 from functools import wraps
 
+from nameko.rpc import rpc
+
 import spotify
 
 
 class SpotifyService:
+    name = 'spotify_service'
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.session = spotify.Session()
@@ -14,6 +18,7 @@ class SpotifyService:
         self.audio = spotify.PortAudioSink(self.session)
         self.loop.start()
 
+    @rpc
     def login(self, user_id=None, password=None):
         logged_in_event = threading.Event()
         self.session.on(
@@ -52,6 +57,7 @@ class SpotifyService:
             return f(self, *args, **kwargs)
         return wrapper
 
+    @rpc
     @login_required
     def playlists(self):
         playlists = self.session.playlist_container
@@ -61,6 +67,7 @@ class SpotifyService:
             playlist.load()
         return [str(p.link) for p in playlists]
 
+    @rpc
     @login_required
     def playlist_info(self, playlisturi):
         playlist = spotify.Playlist(self.session, uri=playlisturi)
@@ -72,6 +79,7 @@ class SpotifyService:
             'spotify_uri': playlisturi
         }
 
+    @rpc
     @login_required
     def playlist_tracks(self, playlisturi):
         playlist = spotify.Playlist(self.session, uri=playlisturi)
@@ -79,6 +87,7 @@ class SpotifyService:
             playlist.load()
         return [str(track.link) for track in playlist.tracks]
 
+    @rpc
     @login_required
     def track_info(self, trackuri):
         track = spotify.Track(self.session, trackuri)
@@ -92,6 +101,7 @@ class SpotifyService:
             'spotify_uri': trackuri
         }
 
+    @rpc
     @login_required
     def play_track(self, trackuri):
         track = spotify.Track(self.session, trackuri)
@@ -99,14 +109,17 @@ class SpotifyService:
         self.session.player.load(track)
         self.play()
 
+    @rpc
     @login_required
     def pause(self):
         self.session.player.pause()
 
+    @rpc
     @login_required
     def play(self):
         self.session.player.play()
 
+    @rpc
     @login_required
     def stop(self):
         self.session.player.pause()

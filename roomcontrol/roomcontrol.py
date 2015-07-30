@@ -1,22 +1,15 @@
+import eventlet
+eventlet.monkey_patch()
+
 import logging
 
 import click
 
-from flask import Flask
+from nameko.runners import ServiceRunner
 
-from roomcontrol.services.alarm import alarm_service
-from roomcontrol.services.light import light_service
-from roomcontrol.services.main import main_service
-from roomcontrol.services.music import music_service
-
-
-def create_app():
-    app = Flask(__name__)
-    app.register_blueprint(main_service)
-    app.register_blueprint(music_service, url_prefix='/music')
-    app.register_blueprint(light_service, url_prefix='/light')
-    app.register_blueprint(alarm_service, url_prefix='/alarm')
-    return app
+from roomcontrol.services.http_entrypoint import HttpEntrypointService
+from roomcontrol.services.localstorage import LocalStorageService
+from roomcontrol.services.spotify_service import SpotifyService
 
 
 @click.group(name='Room Control')
@@ -26,20 +19,32 @@ def create_app():
 def cli(ctx, debug):
     logging.basicConfig(level=logging.INFO)
     if debug:
+        logging.info('DEBUG mode: ON')
         logging.basicConfig(level=logging.DEBUG)
-    ctx.obj['debug'] = debug
 
 
-@cli.command(short_help='Start the server')
-@click.pass_context
-def serve(ctx):
-    app = create_app()
-    app.config['DEBUG'] = ctx.obj['debug']
-    app.run()
+@cli.command(short_help='Start all services')
+def run():
+    config = {'AMQP_URI': 'amqp://localhost'}
+    runner = ServiceRunner(config)
+    runner.add_service(HttpEntrypointService)
+    runner.add_service(LocalStorageService)
+    runner.add_service(SpotifyService)
+    runner.start()
+
+    runnlet = eventlet.spawn(runner.wait)
+
+    try:
+        runnlet.wait()
+    except KeyboardInterrupt:
+        try:
+            runner.stop()
+        except KeyboardInterrupt:
+            runner.kill()
 
 
 def main():
-    cli(obj={})
+    cli()
 
 
 if __name__ == "__main__":
