@@ -15,12 +15,15 @@ def requirements(reqs_filename):
     reqs = parse_requirements(reqs_filename, session=False)
     return [str(r.req) for r in reqs]
 
-
 DESCRIPTION = """
 Backend service designed to run on a RaspberryPi for the RoomControl app
 (https://github.com/miguelfrde/roomcontrol).
 """
 
+ROOT = os.path.abspath(os.path.dirname(__file__))
+
+if os.environ.get('TOXINIDIR'):
+    ROOT = os.environ.get('TOXINIDIR')
 
 setup(
     name='roomcontrol',
@@ -57,7 +60,8 @@ setup(
         ]
     },
     data_files=[
-        (os.path.expanduser('~/.roomcontrol/'), ['roomcontrol/data/storage.cfg'])
+        (os.path.expanduser('~/.roomcontrol/'),
+            [os.path.join(ROOT, 'roomcontrol/data/storage.cfg')])
     ],
     tests_require=requirements('requirements-dev.txt'),
     install_requires=requirements('requirements.txt'),
