@@ -5,7 +5,7 @@
 
 **WARNING: Under development... WIP!**
 
-Application built with Flask that interconnects the Raspberry Pi with the
+Application built with nameko that interconnects the Raspberry Pi with the
 [mobile application](https://github.com/miguelfrde/roomcontrol) to
 control a room's lights, music, alarm and more.
 
@@ -19,7 +19,7 @@ Remember to choose binary, not C-Code.
 ## Setup for development
 
 ```
-$ python setup.py develop
+$ pip install -e '.[dev]'
 ```
 
 ## Testing
