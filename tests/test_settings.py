@@ -1,81 +1,42 @@
-from flask import url_for
+import unittest.mock as mock
+
+from nameko.testing.services import worker_factory
 
 import pytest
 
-import roomcontrol.utils.localstorage as ls
-
-
-TEST_FILE = """
-[settings]
-serverip=0.0.0.0
-notify=False
-sendpic=True
-"""
+from roomcontrol.services.http_entrypoint import HttpEntrypointService
 
 
 @pytest.fixture
-def storage_file(tmpdir):
-    p = tmpdir.join('test_storage.in')
-    p.write(TEST_FILE)
-    ls.set_storage_file(str(p))
-
-
-def test_response_get_settings(storage_file, client):
-    assert client.get(url_for('main.settings')).status_code == 200
-
-
-def test_get_returns_right_vals(storage_file, client):
-    res = client.get(url_for('main.settings'))
-    assert res.json == {
+def http_ep():
+    sample_settings = {
         'serverip': '0.0.0.0',
         'notify': 'False',
         'sendpic': 'True'
     }
+    service = worker_factory(HttpEntrypointService)
+    service.storage_rpc.get_all = mock.Mock(return_value=sample_settings)
+    return service
 
 
-def test_post_response_ok(storage_file, client):
-    res = client.post(
-        url_for('main.settings'),
-        data='{}',
-        headers={'Content-Type': 'application/json'})
-    assert res.status_code == 200
+def test_get_settings_calls_storage_get_all(http_ep):
+    http_ep.get_settings(None)
+    http_ep.storage_rpc.get_all.assert_called_once_with('settings')
 
 
-def test_post_response_sends_ok_message(storage_file, client):
-    res = client.post(
-        url_for('main.settings'),
-        data='{}',
-        headers={'Content-Type': 'application/json'})
-    assert res.data == b'settings updated'
+def test_update_settings_calls_storage_set_all(http_ep):
+    request = mock.Mock()
+    data = b'{"serverip": "1.1.1.1", "notify": true, "sendpic": false}'
+    out = {'serverip': '1.1.1.1', 'notify': 'True', 'sendpic': 'False'}
+    request.get_data = mock.Mock(return_value=data)
+    http_ep.update_settings(request)
+    http_ep.storage_rpc.set_all.assert_called_once_with('settings', out)
 
 
-def test_post_updates_all_fields(storage_file, client):
-    client.post(
-        url_for('main.settings'),
-        data='{"serverip": "127.0.0.1", "notify": true, "sendpic": false}',
-        headers={'Content-Type': 'application/json'})
-    settings = ls.get_all('settings')
-    assert settings['serverip'] == '127.0.0.1'
-    assert settings['notify'] == 'True'
-    assert settings['sendpic'] == 'False'
-
-
-def test_post_updates_some_fields(storage_file, client):
-    client.post(
-        url_for('main.settings'),
-        data='{"notify": true, "sendpic": false}',
-        headers={'Content-Type': 'application/json'})
-    settings = ls.get_all('settings')
-    assert settings['serverip'] == '0.0.0.0'
-    assert settings['notify'] == 'True'
-    assert settings['sendpic'] == 'False'
-
-
-def test_post_ignores_unexistant_fields(storage_file, client):
-    client.post(
-        url_for('main.settings'),
-        data='{"fantasy": "fiction"}',
-        headers={'Content-Type': 'application/json'})
-    settings = ls.get_all('settings')
-    with pytest.raises(KeyError):
-        assert settings['fantasy'] == 'fiction'
+def test_update_settings_ignores_unknown_attrs(http_ep):
+    request = mock.Mock()
+    data = b'{"serverip": "1.1.1.1", "random": 2, "sendpic": false}'
+    out = {'serverip': '1.1.1.1', 'notify': 'False', 'sendpic': 'False'}
+    request.get_data = mock.Mock(return_value=data)
+    http_ep.update_settings(request)
+    http_ep.storage_rpc.set_all.assert_called_once_with('settings', out)

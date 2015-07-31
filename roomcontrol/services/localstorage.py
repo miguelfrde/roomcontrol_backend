@@ -12,8 +12,7 @@ class LocalStorageService:
     def __init__(self):
         self.storage_file = os.getenv('ROOMCONTROL_STORAGE', self.DEFAULT_FILE)
         self.config = configparser.ConfigParser()
-        if os.path.isfile(self.storage_file):
-            self.config.read(self.storage_file)
+        self.set_storage_file(self.storage_file)
 
     def _save_changes(self):
         with open(self.storage_file, 'w') as configfile:
@@ -22,6 +21,11 @@ class LocalStorageService:
     @rpc
     def set_storage_file(self, filename):
         self.storage_file = filename
+        if os.path.isfile(self.storage_file):
+            self.config.read(self.storage_file)
+        else:
+            self.config = configparser.ConfigParser()
+        os.environ['ROOMCONTROL_STORAGE'] = filename
 
     @rpc
     def set(self, kind, key, value):
