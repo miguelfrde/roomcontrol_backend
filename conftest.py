@@ -1,5 +1,6 @@
 """ Minimal conftest.py
 """
+# Source: http://nameko.readthedocs.org/en/latest/testing.html#minimal-conftest-py
 # Nameko relies on eventlet
 # You should monkey patch the standard library as early as possible to avoid
 # importing anything before the patch is applied.
