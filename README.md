@@ -15,6 +15,7 @@ control a room's lights, music, alarm and more.
 Remember to choose binary, not C-Code.
 
 - `libspotify`
+- `RabbitMQ`
 
 ## Setup for development
 
