@@ -7,6 +7,7 @@ import click
 
 from nameko.runners import ServiceRunner
 
+from roomcontrol.services.alarm_service import AlarmService
 from roomcontrol.services.http_entrypoint import HttpEntrypointService
 from roomcontrol.services.localstorage import LocalStorageService
 from roomcontrol.services.spotify_service import SpotifyService
@@ -27,6 +28,7 @@ def cli(ctx, debug):
 def run():
     config = {'AMQP_URI': 'amqp://localhost'}
     runner = ServiceRunner(config)
+    runner.add_service(AlarmService)
     runner.add_service(HttpEntrypointService)
     runner.add_service(LocalStorageService)
     runner.add_service(SpotifyService)

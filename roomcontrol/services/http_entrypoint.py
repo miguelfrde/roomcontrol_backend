@@ -1,5 +1,6 @@
 import json
 
+from nameko.events import EventDispatcher
 from nameko.rpc import RpcProxy
 from nameko.web.handlers import http
 
@@ -8,6 +9,15 @@ class HttpEntrypointService:
     name = 'http_service'
 
     storage_rpc = RpcProxy('localstorage_service')
+
+    dispatch = EventDispatcher()
+
+    def _save(self, section_name, new_content):
+        section = self.storage_rpc.get_all(section_name)
+        for field, value in new_content.items():
+            if field in section:
+                section[field] = str(value)
+        self.storage_rpc.set_all(section_name, section)
 
     @http('POST', '/login')
     def login(self, request):
@@ -19,12 +29,8 @@ class HttpEntrypointService:
 
     @http('POST', '/settings')
     def update_settings(self, request):
-        settings = self.storage_rpc.get_all('settings')
-        new_settings = json.loads(request.get_data().decode('utf-8'))
-        for setting, value in new_settings.items():
-            if setting in settings:
-                settings[setting] = str(value)
-        self.storage_rpc.set_all('settings', settings)
+        settings = json.loads(request.get_data().decode('utf-8'))
+        self._save('settings', settings)
         return 'settings updated'
 
     ##
@@ -32,11 +38,14 @@ class HttpEntrypointService:
 
     @http('POST', '/alarm')
     def update_alarm_settings(self, request):
-        pass
+        alarm_settings = json.loads(request.get_data().decode('utf-8'))
+        self._save('alarm', alarm_settings)
+        self.dispatch('alarm_settings_updated', alarm_settings)
+        return 'alarm settings updated'
 
     @http('GET', '/alarm')
     def get_alarm_settings(self, request):
-        pass
+        return json.dumps(self.storage_rpc.get_all('alarm'))
 
     ##
     # Light entrypoints
