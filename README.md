@@ -58,7 +58,7 @@ GET /music/playlists/<int:id>
 POST /music/playlists/<int:id>
 ```
 
-## data.in format
+## storage.cfg format
 
 This data corresponds directly to the data saved in the
 [mobile device](https://github.com/miguelfrde/roomcontrol#data-saved-to-the-device-local-storage).
