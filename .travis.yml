@@ -7,21 +7,21 @@ addons:
     sources:
       - mopidy-stable
     packages:
-      - libasound2-dev
       - libffi-dev
       - libspotify-dev
       - libspotify12
+      - portaudio19-dev
 
 env:
     - TOX_ENV=py33
     - TOX_ENV=py34
     - TOX_ENV=flake8
 
-install: 
+install:
     - pip install tox
     - pip install coveralls
 
-script: 
+script:
     - tox -e $TOX_ENV
 
 after_success:

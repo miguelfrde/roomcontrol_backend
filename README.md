@@ -21,6 +21,8 @@ Remember to choose binary, not C-Code.
 
 ```
 $ pip install -e '.[dev]'
+$ pip install pyaudio --allow-unverified=pyaudio --allow-external=PyAudio
+$ pip install tox
 ```
 
 ## Testing
