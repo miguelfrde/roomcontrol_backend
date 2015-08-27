@@ -25,7 +25,7 @@ class AlarmService(BaseService):
             return False
         return value
 
-    @event_handler("http_service", "alarm_settings_updated")
+    @event_handler('http_service', 'alarm_settings_updated')
     def update_alarm(self, new_settings):
         t = time.localtime(new_settings['hour'])
         self.hours = t.tm_hour
@@ -41,4 +41,4 @@ class AlarmService(BaseService):
             return
         now = time.localtime()
         if now.tm_hour == self.hours and now.tm_min == self.minutes:
-            print("Fire alarm!")
+            print('Fire alarm!')
