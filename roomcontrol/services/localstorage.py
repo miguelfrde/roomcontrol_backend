@@ -14,6 +14,9 @@ class LocalStorageService:
         self.config = configparser.ConfigParser()
         self.set_storage_file(self.storage_file)
 
+    def test(self):
+        print("Yeah")
+
     def _save_changes(self):
         with open(self.storage_file, 'w') as configfile:
             self.config.write(configfile)

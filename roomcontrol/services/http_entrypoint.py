@@ -1,23 +1,15 @@
 import json
 
 from nameko.events import EventDispatcher
-from nameko.rpc import RpcProxy
 from nameko.web.handlers import http
 
+from roomcontrol.services.base_service import BaseService
 
-class HttpEntrypointService:
+
+class HttpEntrypointService(BaseService):
     name = 'http_service'
 
-    storage_rpc = RpcProxy('localstorage_service')
-
     dispatch = EventDispatcher()
-
-    def _save(self, section_name, new_content):
-        section = self.storage_rpc.get_all(section_name)
-        for field, value in new_content.items():
-            if field in section:
-                section[field] = str(value)
-        self.storage_rpc.set_all(section_name, section)
 
     @http('POST', '/login')
     def login(self, request):
@@ -39,7 +31,6 @@ class HttpEntrypointService:
     @http('POST', '/alarm')
     def update_alarm_settings(self, request):
         alarm_settings = json.loads(request.get_data().decode('utf-8'))
-        self._save('alarm', alarm_settings)
         self.dispatch('alarm_settings_updated', alarm_settings)
         return 'alarm settings updated'
 
