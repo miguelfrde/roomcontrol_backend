@@ -1,6 +1,7 @@
 import json
 
 from nameko.events import EventDispatcher
+from nameko.rpc import RpcProxy
 from nameko.web.handlers import http
 
 from roomcontrol.services.base_service import BaseService
@@ -10,6 +11,7 @@ class HttpEntrypointService(BaseService):
     name = 'http_service'
 
     dispatch = EventDispatcher()
+    spotify_rpc = RpcProxy('spotify_rpc')
 
     @http('POST', '/login')
     def login(self, request):
@@ -50,39 +52,48 @@ class HttpEntrypointService(BaseService):
         pass
 
     ##
-    # Music entrypoints
+    # Volume entrypoints
 
     @http('GET', '/music/volume')
     def get_volume(self, request):
-        pass
+        return self.volume.get()
 
-    @http('POST', '/music/volume')
-    def update_volume(self, request):
-        pass
+    @http('POST', '/music/volume/<int:level>')
+    def update_volume(self, request, level):
+        self.dispatch('update_volume', level)
+        return 'Update volume requested'
+
+    ##
+    # Music entrypoints
 
     @http('GET', '/music/status')
     def music_status(self, request):
-        pass
-
-    @http('POST', '/music/play')
-    def play(self, request):
-        pass
+        return self.spotify_rpc.playing_status()
 
     @http('POST', '/music/play/playlists/<int:playlist_id>')
     def play_playlist(self, request, playlist_id):
-        pass
+        self.dispatch('spotify_play_playlist', playlist_id)
+        return 'Spotify play playlist requested'
+
+    @http('POST', '/music/play')
+    def play(self, request):
+        self.dispatch('spotify_play')
+        return 'Spotify play requested'
 
     @http('POST', '/music/pause')
     def pause(self, request):
-        pass
+        self.dispatch('spotify_pause')
+        return 'Spotify pause requested'
 
     @http('POST', '/music/next')
     def next_song(self, request):
-        pass
+        self.dispatch('spotify_next')
+        return 'Spotify next song requested'
 
     @http('POST', '/music/previous')
     def previous_song(self, request):
-        pass
+        self.dispatch('spotify_previous')
+        return 'Spotify previouse song requested'
 
     @http('GET', '/tracks/current')
     def current_track(self, request):

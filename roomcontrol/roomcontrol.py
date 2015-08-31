@@ -9,8 +9,10 @@ from nameko.runners import ServiceRunner
 
 from roomcontrol.services.alarm_service import AlarmService
 from roomcontrol.services.http_entrypoint import HttpEntrypointService
+from roomcontrol.services.light_service import LightService
 from roomcontrol.services.localstorage import LocalStorageService
 from roomcontrol.services.spotify_service import SpotifyService
+from roomcontrol.services.volume_service import VolumeService
 
 
 @click.group(name='Room Control')
@@ -30,8 +32,10 @@ def run():
     runner = ServiceRunner(config)
     runner.add_service(AlarmService)
     runner.add_service(HttpEntrypointService)
+    runner.add_service(LightService)
     runner.add_service(LocalStorageService)
     runner.add_service(SpotifyService)
+    runner.add_service(VolumeService)
     runner.start()
 
     runnlet = eventlet.spawn(runner.wait)

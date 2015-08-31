@@ -3,19 +3,31 @@ import os.path
 import threading
 from functools import wraps
 
+from nameko.events import event_handler
 from nameko.rpc import rpc
 
 import spotify
 
+from roomcontrol.services.base_service import BaseService
 
-class SpotifyService:
+
+class SpotifyService(BaseService):
     name = 'spotify_service'
+
+    STOPPED = 'stop'
+    PLAYING = 'play'
+    PAUSED = 'paused'
+
+    STATES = (STOPPED, PLAYING, PAUSED)
+
+    _LOGIN_DATAFILE = os.path.expanduser('~/.roomcontrol/spotifysession')
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.session = spotify.Session()
         self.loop = spotify.EventLoop(self.session)
         self.audio = spotify.PortAudioSink(self.session)
+        self.current_state = SpotifyService.STOPPED
         self.loop.start()
 
     @rpc
@@ -26,15 +38,15 @@ class SpotifyService:
             lambda s:
                 self.__login_connection_state_listener(s, logged_in_event))
 
-        if os.path.isfile('blobs/currentsession'):
-            with open('blobs/currentsession', 'rt') as f:
+        if os.path.isfile(SpotifyService._LOGIN_DATAFILE):
+            with open(SpotifyService._LOGIN_DATAFILE, 'rt') as f:
                 user_id, blob = f.read().split('|')
                 self.logger.info('Trying to login using the blob file')
                 self.session.login(user_id, blob=blob, remember_me=True)
         else:
             self.session.on(
                 spotify.SessionEvent.CREDENTIALS_BLOB_UPDATED,
-                lambda s, b: self.__login_credentials_blob_updated(s, b))
+                self.__login_credentials_blob_updated)
             self.session.login(user_id, password, remember_me=True)
 
         logged_in_event.wait()
@@ -44,9 +56,9 @@ class SpotifyService:
             logged_in_event.set()
 
     def __login_credentials_blob_updated(self, session, blob):
-        with open('blobs/currentsession', 'wt') as f:
+        with open(SpotifyService._LOGIN_DATAFILE, 'wt') as f:
             f.write(session.user_name + '|' + blob.decode('utf-8'))
-        self.logger.info('Blob saved')
+        self.logger.info('Spotify session blob saved')
 
     def login_required(f):
         @wraps(f)
@@ -57,14 +69,24 @@ class SpotifyService:
             return f(self, *args, **kwargs)
         return wrapper
 
+    def move_to_state(state):
+        def decorator(f):
+            @wraps(f)
+            def wrapper(self, *args, **kwargs):
+                if self.current_state in SpotifyService.STATES:
+                    self.current_state = state
+                return f(self, *args, **kwargs)
+            return wrapper
+        return decorator
+
     @rpc
     @login_required
     def playlists(self):
         playlists = self.session.playlist_container
         playlists.load()
-        playlists = [p for p in playlists if isinstance(p, spotify.Playlist)]
         for playlist in playlists:
-            playlist.load()
+            if type(playlist) is spotify.Playlist:
+                playlist.load()
         return [str(p.link) for p in playlists]
 
     @rpc
@@ -109,18 +131,25 @@ class SpotifyService:
         self.session.player.load(track)
         self.play()
 
-    @rpc
+    @event_handler('http_service', 'spotify_pause')
     @login_required
+    @move_to_state(PAUSED)
     def pause(self):
         self.session.player.pause()
 
-    @rpc
+    @event_handler('http_service', 'spotify_play')
     @login_required
+    @move_to_state(PLAYING)
     def play(self):
         self.session.player.play()
 
-    @rpc
+    @event_handler('http_service', 'spotify_stop')
     @login_required
+    @move_to_state(STOPPED)
     def stop(self):
         self.session.player.pause()
         self.session.player.unload()
+
+    @rpc
+    def playing_status(self):
+        return self.current_state
