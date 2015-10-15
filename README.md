@@ -14,7 +14,7 @@ control a room's lights, music, alarm and more.
 - A Spotify app key is needed and it can be obtained [here](https://developer.spotify.com/technologies/libspotify/#application-keys).
 Remember to choose binary, not C-Code.
 
-- `libspotify`
+- `libspotify` (I suggest to follow [this](https://pyspotify.mopidy.com/en/latest/installation/))
 - `RabbitMQ`
 
 ## Setup for development
