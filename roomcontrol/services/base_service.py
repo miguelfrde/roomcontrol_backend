@@ -8,5 +8,5 @@ class BaseService:
         section = self.storage_rpc.get_all(section_name)
         for field, value in new_content.items():
             if field in section:
-                section[field] = str(value)
+                section[field] = value
         self.storage_rpc.set_all(section_name, section)

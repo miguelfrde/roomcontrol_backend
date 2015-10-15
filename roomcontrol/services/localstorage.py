@@ -44,4 +44,12 @@ class LocalStorageService:
 
     @rpc
     def get_all(self, kind):
-        return self.config._sections[kind]
+        return self._parsed(self.config._sections[kind])
+
+    def _parsed(self, mapping):
+        for k, v in mapping.items():
+            if v.isdigit():
+                mapping[k] = int(v)
+            if v in ('False', 'True'):
+                mapping[k] = v == 'True'
+        return mapping

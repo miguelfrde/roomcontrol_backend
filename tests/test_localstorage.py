@@ -75,10 +75,11 @@ def test_set_corresponds_to_get(localstorage):
     assert localstorage.get('kind2', 'd') == '4'
 
 
-def test_set_all_corresponds_to_get_all(localstorage):
-    data = {'e': '5', 'f': '6'}
+def test_set_all_corresponds_to_get_all_parsed(localstorage):
+    data = {'e': '5', 'f': 6, 'g': 'ab', 'h': True}
+    expected = {'e': 5, 'f': 6, 'g': 'ab', 'h': True}
     localstorage.set_all('kind3', data)
-    assert localstorage.get_all('kind3') == data
+    assert localstorage.get_all('kind3') == expected
 
 
 def test_set_edits_file(localstorage):

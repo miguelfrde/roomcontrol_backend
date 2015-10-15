@@ -73,7 +73,7 @@ class SpotifyService(BaseService):
         def decorator(f):
             @wraps(f)
             def wrapper(self, *args, **kwargs):
-                if self.current_state in SpotifyService.STATES:
+                if state in SpotifyService.STATES:
                     self.current_state = state
                 return f(self, *args, **kwargs)
             return wrapper

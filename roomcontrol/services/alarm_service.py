@@ -10,6 +10,7 @@ class AlarmService(BaseService):
     name = 'alarm_service'
 
     def __init__(self):
+        super().__init__()
         defaults = self.storage_rpc.get_all('alarm')
         t = defaults['hour']
         self.hours = t.tm_hour
