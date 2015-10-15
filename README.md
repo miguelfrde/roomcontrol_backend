@@ -25,6 +25,12 @@ $ pip install pyaudio --allow-unverified=pyaudio --allow-external=PyAudio
 $ pip install tox
 ```
 
+## Usage
+
+```
+$ roomcontrol run
+```
+
 ## Testing
 
 ```
