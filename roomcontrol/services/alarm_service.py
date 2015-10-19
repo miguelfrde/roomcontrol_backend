@@ -10,7 +10,6 @@ class AlarmService(BaseService):
     name = 'alarm_service'
 
     def __init__(self):
-        super().__init__()
         defaults = self.storage_rpc.get_all('alarm')
         t = defaults['hour']
         self.hours = t.tm_hour
@@ -34,7 +33,7 @@ class AlarmService(BaseService):
         self.is_on = self.__on_str(new_settings['active'])
         self.light_program = new_settings['light']
         self.sound = new_settings['sound']
-        self._save('alarm', new_settings)
+        self.save('alarm', new_settings)
 
     @timer(interval=60)
     def fire_alarm(self):

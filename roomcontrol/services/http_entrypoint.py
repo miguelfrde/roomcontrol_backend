@@ -24,7 +24,7 @@ class HttpEntrypointService(BaseService):
     @http('POST', '/settings')
     def update_settings(self, request):
         settings = json.loads(request.get_data().decode('utf-8'))
-        self._save('settings', settings)
+        self.save('settings', settings)
         return 'settings updated'
 
     ##
