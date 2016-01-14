@@ -1,0 +1,46 @@
+{
+  "name": "roomcontrol",
+  "version": "1.0.0",
+  "description": "Roomcontrol backend",
+  "scripts": {
+    "start": "node bin/roomcontrol.js",
+    "test": "istanbul cover _mocha -- -R spec",
+    "lint": "eslint . --ext .js --quiet"
+  },
+  "bin": {
+    "roomcontrol": "bin/roomcontrol.js"
+  },
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miguelfrde/roomcontrol_backend.git"
+  },
+  "keywords": [],
+  "author": "Miguel Flores Ruiz de Eguino",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/miguelfrde/roomcontrol_backend/issues"
+  },
+  "homepage": "https://miguelfrde.com/roomcontrol",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3"
+  },
+  "preferGlobal": "true",
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "eslint": "^2.0.0-beta.1",
+    "gulp": "^3.9.0",
+    "gulp-eslint": "^2.0.0-rc-2",
+    "gulp-istanbul": "^0.10.3",
+    "gulp-live-server": "0.0.29",
+    "gulp-mocha": "^2.2.0",
+    "istanbul": "^0.4.2",
+    "mocha": "^2.3.4",
+    "morgan": "^1.6.1",
+    "sinon": "^1.17.2"
+  }
+}

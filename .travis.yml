@@ -1,37 +1,16 @@
-language: python
+language: node_js
 
 sudo: false
 
-addons:
-  apt:
-    sources:
-      - mopidy-stable
-    packages:
-      - libffi-dev
-      - libspotify-dev
-      - libspotify12
-      - portaudio19-dev
-
-matrix:
-  include:
-    - python: 3.3
-      env:
-        - TOX_ENV=py33
-    - python: 3.4
-      env:
-        - TOX_ENV=py34
-    - python: 3.5
-      env:
-        - TOX_ENV=py35
-    - python: 3.5
-      env:
-        - TOX_ENV=flake8
-
-install:
-  - pip install tox
-  - pip install coveralls
+node_js:
+  - 4.0
+  - 4.1
+  - 4.2
+  - 5.0
+  - 5.1
+  - 5.2
+  - 5.3
+  - 5.4
 
 script:
-  - tox -e $TOX_ENV
-
-after_success: coveralls
+  - gulp test
