@@ -27,6 +27,7 @@
   "homepage": "https://miguelfrde.com/roomcontrol",
   "dependencies": {
     "body-parser": "^1.14.2",
+    "morgan": "^1.6.1",
     "express": "^4.13.3"
   },
   "preferGlobal": "true",
@@ -40,7 +41,6 @@
     "gulp-mocha": "^2.2.0",
     "istanbul": "^0.4.2",
     "mocha": "^2.3.4",
-    "morgan": "^1.6.1",
     "sinon": "^1.17.2"
   }
 }
