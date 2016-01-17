@@ -12,5 +12,13 @@ node_js:
   - 5.3
   - 5.4
 
+install:
+  - npm install
+  - npm install coveralls
+  - npm install mocha-lcov-reporter
+
 script:
   - gulp test
+
+after_success:
+  - coveralls
